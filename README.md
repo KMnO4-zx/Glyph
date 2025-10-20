@@ -17,13 +17,13 @@
 
 
   <a href="assets/intro.pdf" target="_blank">
-    <img src="assets/intro.png"  style="max-width: 50%; height: auto;" />
+    <img src="assets/intro.png"  width="50%"; height: auto;" />
   </a>
 </div>
 
 
 ## Release
-- [2025/10/20] 🚀🚀🚀 We release the **Glyph** paper — introducing a framework for **visual–text compression** that renders long texts into compact images and processes them with vision–language models (VLMs).
+- [2025/10/21] 🚀🚀🚀 We release the **Glyph** paper — introducing a framework for **visual–text compression** that renders long texts into compact images and processes them with vision–language models (VLMs).
 
 - [Coming Soon] 📦 Our code and model will be open-sourced shortly. Stay tuned!
 
@@ -49,7 +49,7 @@ Speedup ratios of Glyph over the text backbone model for prefill, decoding, and 
 
 ## Rendering Config
 <div align="center">
-<img src="assets/best_config.png"  style="max-width: 70%; height: auto;" />
+<img src="assets/best_config.png"  width="60%"; height: auto;" />
 </div>
 
 
