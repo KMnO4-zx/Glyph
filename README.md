@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href=""><b>🤗 Model Download</b></a> |
-  <a href=""><b>📄 Paper Link</b></a> 
+  <a href="https://arxiv.org/pdf/2510.17800"><b>📄 Paper Link</b></a> 
 </p>
 
 (Upper) Comparison of paradigms for long-context tasks: conventional text-based LLMs vs. the proposed Glyph, a VLM approach that renders text as compact images for efficient token compression. (Lower) Glyph achieves competitive results on LongBench and MRCR, with notable compression and inference speedups on 128K-token inputs.
