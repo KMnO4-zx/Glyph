@@ -12,12 +12,13 @@
 Instead of extending token-based context windows, Glyph renders long textual sequences into images and processes them using vision–language models (VLMs).
 This design transforms the challenge of long-context modeling into a multimodal problem, substantially reducing computational and memory costs while preserving semantic information.
 
-<figure>
-  <img src="assets/intro.png" alt="Comparison of long-context paradigms" style="display: block; margin: 0 auto; max-width: 70%;">
-  <figcaption>
-    (Upper) Comparison of two paradigms for long-context tasks: conventional approaches directly feeding plain text into LLMs, and the proposed VLM-based paradigm, Glyph, which renders text as compact images to achieve substantial input-token compression. (Lower) Glyph attains competitive performance on LongBench and MRCR, while offering significant compression and inference speedup over its text backbone model on 128K-token inputs.
-  </figcaption>
-</figure>
+<p align="center">
+  <img src="assets/intro.png" width="70%">
+</p>
+
+<p>
+(Upper) Comparison of two paradigms for long-context tasks: conventional approaches directly feeding plain text into LLMs, and the proposed VLM-based paradigm, Glyph, which renders text as compact images to achieve substantial input-token compression. (Lower) Glyph attains competitive performance on LongBench and MRCR, while offering significant compression and inference speedup over its text backbone model on 128K-token inputs.
+</p>
 
 
 
@@ -61,7 +62,7 @@ bash run_demo.sh
 
 🎬 A short demonstration is provided below, showing the faster prefill speed of Glyph on long-context inputs:
 
-<video src="assets/demo.mp4" controls width="80%" style="display:block;margin:0 auto;"></video>
+https://github.com/user-attachments/assets/3cf0b8a1-be22-44f8-8f90-905fb2d6fdd7
 
 Glyph achieves notably improved prefill efficiency on long-context inputs, with increasing benefits as the sequence length grows. 🚀
 
