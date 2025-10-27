@@ -62,7 +62,7 @@ bash run_demo.sh
 
 🎬 A short demonstration is provided below, showing the faster prefill speed of Glyph on long-context inputs:
 
-https://github.com/user-attachments/assets/3cf0b8a1-be22-44f8-8f90-905fb2d6fdd7
+https://github.com/user-attachments/assets/9317c567-2b25-40c0-a4f3-7c8edd7a4387
 
 Glyph achieves notably improved prefill efficiency on long-context inputs, with increasing benefits as the sequence length grows. 🚀
 
