@@ -1,0 +1,17 @@
+# Core image processing
+Pillow>=9.0.0
+numpy>=1.21.0
+
+# PDF processing
+pdf2image>=1.16.0
+
+# PDF generation
+reportlab>=3.6.0
+
+# Progress bars
+tqdm>=4.64.0
+
+# Additional utilities (often used with these packages)
+# Uncomment if needed for your specific setup
+# setuptools>=65.0.0
+# wheel>=0.37.0

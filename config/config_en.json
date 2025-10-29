@@ -1,8 +1,8 @@
 {
       "page-size": "595,842",
-      "dpi": 72,
-      "margin-x": 10,
-      "margin-y": 10,
+      "dpi": 200,
+      "margin-x": 5,
+      "margin-y": 5,
       "font-path": "../config/Verdana.ttf",
       "font-size": 9,
       "line-height": 10,
