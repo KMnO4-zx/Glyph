@@ -385,17 +385,17 @@ def batch_process_to_images(json_path, output_dir, output_jsonl_path,
 
 if __name__ == '__main__':
     # 示例1：单文本推理
-    CONFIG_PATH = '../config/config_zh.json'
+    CONFIG_PATH = '../config/config_en.json'
     text = "This is a test text\nSecond line of text\nThird line of text"
 
-    with open("./input_zh.txt", "r", encoding="utf-8") as f:
+    with open("./input.txt", "r", encoding="utf-8") as f:
         text = f.read()
     OUTPUT_DIR = './output_images'
     images = text_to_images(
         text=text,
         output_dir=OUTPUT_DIR,
         config_path=CONFIG_PATH,
-        unique_id='test_002',
+        unique_id='test_dpi_72',
     )
     print(f"Generated {len(images)} images:")
     for img in images:
