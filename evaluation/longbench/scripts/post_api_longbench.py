@@ -14,18 +14,19 @@ import os
 
 # —— 原有的 API 调用和图片编码函数 —— #
 
-model_name = "glyph"
-# api_key = "EMPTY" 
+model_name = "Qwen/Qwen3-VL-32B-Instruct"
+api_key = "sk-nxojktkvclnosbfmabbraozvxuufszzsbdvgxxkgpktsugel" 
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--e', action='store_true', help="Evaluate on LongBench-E")
     parser.add_argument('--use_image', action='store_true', help="Use image processing")
     parser.add_argument('--api_url', type=str, default="http://your_api_url:port/v1/chat/completions", help="API endpoint URL")
-    parser.add_argument('--pool_size', type=int, default=8, help="Process pool size")
+    parser.add_argument('--pool_size', type=int, default=2, help="Process pool size")
     parser.add_argument('--input_dir', type=str, default='./longbench/rendered_images', help="Input directory for dataset files")
     parser.add_argument('--output_dir', type=str, default='./longbench/pred', help="Output directory for prediction files")
     parser.add_argument('--model_name', type=str, default='glyph', help="Model name for creating output subdirectory")
+    parser.add_argument('--api_key', type=str, default='', help="API key for authentication")
     return parser.parse_args(args)
 
 def encode_image_with_max_pixels(image_path: str, max_pixels: int = 100000, save_compressed=False) -> str:
@@ -101,7 +102,7 @@ def post_api(
 
     headers = {
         'Content-Type': 'application/json',
-        # 'Authorization': f'Bearer {api_key}'
+        'Authorization': f'Bearer {api_key}'
     }
 
     try:
@@ -252,6 +253,7 @@ if __name__ == "__main__":
     
 
     model_name = args.model_name
+    api_key = args.api_key
     # 创建输出目录
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)

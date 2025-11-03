@@ -56,6 +56,7 @@ OUTPUT_DIR = None
 JSON_PATH = None
 
 NEWLINE_MARKUP = None  # 添加这一行
+recover = False  # 添加全局变量recover
 
 # 对齐映射
 ALIGN_MAP = {
@@ -80,7 +81,7 @@ def parse_args():
     p.add_argument("--margin-y", type=float, default=20, help="上下边距 (pt)")
 
     # 字体
-    p.add_argument("--font-path", type=str, default=None, help="TTF 字体文件路径")
+    p.add_argument("--font-path", type=str, default="../config/SourceHanSansHWSC-VF.ttf", help="TTF 字体文件路径")
     p.add_argument("--font-size", type=float, default=9, help="字体大小 (pt)")
     p.add_argument(
         "--line-height",
@@ -184,10 +185,12 @@ def parse_args():
     return p.parse_args()
 
 
-def process_one(item):
+def process_one(args):
+    global recover
+    item, output_dir = args  # 解包参数
     if recover:
         _id = item.get('unique_id', 'UNKNOWN')
-        if os.path.exists(os.path.join(OUTPUT_DIR, _id)):
+        if os.path.exists(os.path.join(output_dir, _id)):
             print(f"Find existing dir for {_id}, skipping...")
             # 即使跳过，也要构建预期的图片路径并返回
             # 这是一个简化逻辑，假设我们不知道实际页数，可以先留空或后续扫描
@@ -198,6 +201,11 @@ def process_one(item):
         # 每个 item 可自带 config 覆盖全局渲染参数
         config = item.get('config', {}) or {}
 
+        # 获取唯一ID
+        _id = item.get('unique_id', None)
+        if not _id:
+            raise ValueError(f"Item missing 'unique_id' field: {item}")
+
         # 解析配置或使用全局默认
         page_size = (tuple(map(float, config['page-size'].split(',')))
                     if 'page-size' in config else PAGE_SIZE)
@@ -205,11 +213,31 @@ def process_one(item):
         margin_y = config.get('margin-y', MARGIN_Y)
         
         # --- 修改：调整字体文件的相对路径 ---
-        font_path = config.get('font-path', FONT_PATH)
+        font_path = config.get('font-path')
+
+        # 如果config中没有font-path，使用默认值
+        if not font_path:
+            font_path = "../config/SourceHanSansHWSC-VF.ttf"
+
         if font_path and not os.path.isabs(font_path):
-            # 如果是相对路径，我们假设它是相对于 config 目录的
-            # 将其转换为相对于当前脚本目录的正确路径
-            font_path = os.path.join('..', 'config', os.path.basename(font_path))
+            # 如果是相对路径，将其转换为绝对路径
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            if font_path.startswith('../config'):
+                # 从 evaluation/longbench/scripts -> Glyph/config 需要向上3级
+                font_path = os.path.join(script_dir, '..', '..', '..', 'config', os.path.basename(font_path))
+            else:
+                font_path = os.path.join(script_dir, font_path)
+            font_path = os.path.normpath(font_path)
+
+        # 最终检查
+        if not font_path:
+            print(f"[DEBUG] Font path is None for item {_id}, config: {config}")
+            raise ValueError(f"Font path is None for item {_id}")
+
+        # 验证字体文件是否存在
+        if not os.path.exists(font_path):
+            print(f"[DEBUG] Font file not found for item {_id}: {font_path}")
+            raise ValueError(f"Font file not found: {font_path}")
 
         font_name = os.path.basename(font_path).split('.')[0]
         font_size = config.get('font-size', FONT_SIZE)
@@ -247,8 +275,7 @@ def process_one(item):
 
 
         
-        
-        _id = item.get('unique_id', None) # 使用 unique_id 作为标识符
+        # 使用 _id 作为标识符（已在前面定义）
         assert _id
         assert font_path
         # 注册字体
@@ -348,7 +375,11 @@ def process_one(item):
             page_texts = [page.extract_text() for page in pdf.pages]
             num_pages = len(pdf.pages)
         
-        out_root = os.path.join(OUTPUT_DIR, _id)
+        # 检查 output_dir 是否有效
+        if not output_dir:
+            raise ValueError(f"output_dir is None for item {_id}")
+
+        out_root = os.path.join(output_dir, _id)
         os.makedirs(out_root, exist_ok=True)
         
         with open(os.path.join(out_root, 'page_texts.json'), 'w', encoding='utf-8') as f:
@@ -420,7 +451,9 @@ def process_one(item):
         return item
     except Exception as e:
         _id = item.get('unique_id', 'UNKNOWN')
+        import traceback
         print(f"[ERROR] process_one_id={_id}, error={e}", file=sys.stderr)
+        print(f"[ERROR] Traceback: {traceback.format_exc()}", file=sys.stderr)
         return None
 
 def main():
@@ -429,7 +462,7 @@ def main():
     global FIRST_LINE_INDENT, LEFT_INDENT, RIGHT_INDENT, ALIGNMENT
     global SPACE_BEFORE, SPACE_AFTER, BORDER_WIDTH, BORDER_PADDING
     global HORIZONTAL_SCALE, DPI, AUTO_CROP_LAST_PAGE, AUTO_CROP_WIDTH, PROCESSES, OUTPUT_DIR
-    global NEWLINE_MARKUP
+    global NEWLINE_MARKUP, recover
 
     args = parse_args()
     # 全局默认值
@@ -519,9 +552,12 @@ def main():
         batch_size = 100
         batch_buffer = []
         
+        # 准备参数列表，每个元素是 (item, output_dir) 元组
+        args_list = [(item, OUTPUT_DIR) for item in filtered_data]
+
         with Pool(processes=PROCESSES) as pool:
             # 使用 imap_unordered 来获取处理结果
-            for i, result_item in enumerate(tqdm(pool.imap_unordered(process_one, filtered_data, chunksize=1), total=len(filtered_data), desc=f"Rendering {filename}")):
+            for i, result_item in enumerate(tqdm(pool.imap_unordered(process_one, args_list, chunksize=1), total=len(filtered_data), desc=f"Rendering {filename}")):
                 if result_item:
                     batch_buffer.append(result_item)
                     _id = result_item.get('unique_id', 'UNKNOWN')
