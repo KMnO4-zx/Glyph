@@ -388,14 +388,14 @@ if __name__ == '__main__':
     CONFIG_PATH = '../config/config_en.json'
     text = "This is a test text\nSecond line of text\nThird line of text"
 
-    with open("./input.txt", "r", encoding="utf-8") as f:
+    with open("./jailbreak.txt", "r", encoding="utf-8") as f:
         text = f.read()
-    OUTPUT_DIR = './output_images'
+    OUTPUT_DIR = './jailbreak_images'
     images = text_to_images(
         text=text,
         output_dir=OUTPUT_DIR,
         config_path=CONFIG_PATH,
-        unique_id='test_dpi_72',
+        unique_id='jailbreak_dpi_120',
     )
     print(f"Generated {len(images)} images:")
     for img in images:
