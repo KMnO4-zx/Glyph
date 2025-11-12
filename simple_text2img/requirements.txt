@@ -1,0 +1,14 @@
+# Pillow - 图像处理库 (PIL的替代)
+Pillow>=8.0.0
+# reportlab - PDF生成库
+reportlab>=3.6.0
+# pdf2image - PDF转图片
+pdf2image>=1.16.0
+# numpy - 数值计算，用于图像裁剪算法
+numpy>=1.21.0
+
+# 注意事项：
+# pdf2image 需要 poppler 工具支持
+# Ubuntu/Debian: sudo apt-get install poppler-utils
+# macOS: brew install poppler
+# Windows: 下载 poppler for Windows 并添加到PATH
